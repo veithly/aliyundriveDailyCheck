@@ -40,6 +40,18 @@ function updateAccesssToken(queryBody, remarks) {
     })
 }
 
+// 判断是否未本月最后一天
+function isLastDayOfMonth() {
+  const today = new Date();
+  const day = today.getDate();
+  const month = today.getMonth() + 1; // getMonth() 返回的月份从0开始，因此需要+1
+  const year = today.getFullYear();
+
+  const lastDayOfMonth = new Date(year, month + 1, 0); // 获取下一个月的前一天，也就是本月的最后一天
+
+  return day === lastDayOfMonth.getDate();
+}
+
 //签到列表
 function sign_in(access_token, remarks) {
   const sendMessage = [remarks]
@@ -72,7 +84,7 @@ function sign_in(access_token, remarks) {
         v => v.status === 'normal' && !v.isReward
       )
 
-      if (rewards.length) {
+      if (rewards.length && isLastDayOfMonth()) {
         for await (reward of rewards) {
           const signInDay = reward.day
           try {
